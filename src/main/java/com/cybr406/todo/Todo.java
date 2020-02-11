@@ -1,16 +1,19 @@
 package com.cybr406.todo;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Todo {
 
-    private Long id;
+    @NotBlank(message = "Details field cannot be empty")
+    private String details;
 
+    @NotBlank(message = "Author field cannot be empty")
     private String author;
 
-    private String details;
+    private Long id;
 
     private List<Task> tasks = new ArrayList<>();
 
