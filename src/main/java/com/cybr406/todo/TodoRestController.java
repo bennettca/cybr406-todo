@@ -25,6 +25,8 @@ public class TodoRestController {
         }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+
     @PostMapping("/todos/{id}/tasks")
     public ResponseEntity<Todo> addATask(@PathVariable long id, @RequestBody Task task)
     {
@@ -49,14 +51,11 @@ public class TodoRestController {
             return new ResponseEntity<>(inMemoryTodoRepository.create(todo), HttpStatus.CREATED);
     }
 
-
     @GetMapping("/todos")
     public ResponseEntity<List<Todo>> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<Todo> listOfTodos = inMemoryTodoRepository.findAll(page, size);
         return new ResponseEntity<>(listOfTodos, HttpStatus.OK);
     }
-
-
 
     @DeleteMapping("/todos/{id}")
     public ResponseEntity<Todo> deleteTodo(@PathVariable long id) {
@@ -67,7 +66,6 @@ public class TodoRestController {
         catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -84,7 +82,4 @@ public class TodoRestController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
-
 }
