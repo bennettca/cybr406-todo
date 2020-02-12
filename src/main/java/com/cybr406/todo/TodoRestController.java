@@ -71,7 +71,7 @@ public class TodoRestController {
         {
             inMemoryTodoRepository.deleteTask(id);
         }
-        catch (NoSuchElementException NSE )
+        catch (NoSuchElementException E )
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
