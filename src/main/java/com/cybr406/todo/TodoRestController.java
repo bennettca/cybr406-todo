@@ -17,7 +17,6 @@ public class TodoRestController {
     @GetMapping("/todos/{id}")
     public ResponseEntity<Todo> getID(@PathVariable long id) {
         Optional<Todo> listID = inMemoryTodoRepository.find(id);
-
         if(listID.isPresent())
         {
             Todo newID = listID.get();
@@ -25,8 +24,6 @@ public class TodoRestController {
         }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-
     @PostMapping("/todos/{id}/tasks")
     public ResponseEntity<Todo> addATask(@PathVariable long id, @RequestBody Task task)
     {
@@ -37,7 +34,6 @@ public class TodoRestController {
         {
             return new ResponseEntity<>(todo, HttpStatus.CREATED);
         }
-
         return new ResponseEntity<>(todo, HttpStatus.NOT_FOUND);
     }
 
@@ -75,7 +71,7 @@ public class TodoRestController {
         {
             inMemoryTodoRepository.deleteTask(id);
         }
-        catch (NoSuchElementException e)
+        catch (NoSuchElementException NSE )
         {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
