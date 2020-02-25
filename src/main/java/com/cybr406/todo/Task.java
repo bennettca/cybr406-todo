@@ -4,17 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonIgnore
+    @ManyToOne
     private Todo todo;
 
     private Boolean completed;
 
+    @Lob
     private String details;
 
 
