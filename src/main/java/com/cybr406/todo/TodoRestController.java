@@ -30,7 +30,8 @@ public class TodoRestController
 	@GetMapping("/todos/{id}")
 	public ResponseEntity<Todo> getID(@PathVariable long id)
 		{
-			Optional<Todo> listID = inMemoryTodoRepository.find(id);
+			Optional<Todo> listID = todoJpaRepository.findById(id);
+			
 			if(listID.isPresent())
 				{
 					Todo newID = listID.get();
@@ -42,14 +43,14 @@ public class TodoRestController
 	@PostMapping("/todos/{id}/tasks")
 	public ResponseEntity<Todo> addATask(@PathVariable long id , @RequestBody Task task)
 		{
-			Todo todo = inMemoryTodoRepository.addTask(id , task);
-			List<Task> taskList = todo.getTasks();
-			
-			if(taskList.isEmpty() == false)
-				{
-					return new ResponseEntity<>(todo , HttpStatus.CREATED);
-				}
-			return new ResponseEntity<>(todo , HttpStatus.NOT_FOUND);
+			return todoJpaRepository.findById(id)
+					.map(todo ->
+						 {
+							 todo.getTasks().add(task);
+							 task.setTodo(todo);
+							 taskJpaRepository.save(task);
+							 return new ResponseEntity<>(todo , HttpStatus.CREATED);
+						 }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 		}
 	
 	@PostMapping("/todos")
@@ -57,17 +58,15 @@ public class TodoRestController
 		{
 			
 			Todo creation = todoJpaRepository.save(todo);
-			return new ResponseEntity<>(creation, HttpStatus.CREATED);
+			return new ResponseEntity<>(creation , HttpStatus.CREATED);
 		}
 	
-	
-		@GetMapping("/todos")
+	@GetMapping("/todos")
 	public Page<Todo> findAll(Pageable page)
-			
-			{
-				return todoJpaRepository.findAll(page);
+		
+		{
+			return todoJpaRepository.findAll(page);
 		}
-	 
 	
 	@DeleteMapping("/todos/{id}")
 	public ResponseEntity<Todo> deleteTodo(@PathVariable long id)
@@ -75,7 +74,7 @@ public class TodoRestController
 			
 			try
 				{
-					inMemoryTodoRepository.delete(id);
+					todoJpaRepository.deleteById(id);
 				}
 			catch (NoSuchElementException e)
 				{
@@ -89,7 +88,7 @@ public class TodoRestController
 		{
 			try
 				{
-					inMemoryTodoRepository.deleteTask(id);
+					taskJpaRepository.deleteById(id);
 				}
 			catch (NoSuchElementException E)
 				{
